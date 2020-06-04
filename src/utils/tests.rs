@@ -35,11 +35,41 @@ fn test_mul() {
 }
 
 #[test]
+fn test_ref_mul() {
+    let v1 = vectors::ThreeVector::new(1.0, 2.0, 3.0);
+    let v2 = &v1 * 2.0;
+
+    assert_eq!((v1.x, v1.y, v1.z), (1.0, 2.0, 3.0));
+    assert_eq!((v2.x, v2.y, v2.z), (2.0, 4.0, 6.0));
+}
+
+#[test]
 fn test_sub() {
     let v1 = vectors::ThreeVector::new(1.0, 2.0, 3.0);
     let v2 = vectors::ThreeVector::new(1.0, 2.0, 3.0);
 
     assert_eq!(v1 - v2, vectors::ThreeVector::zeros());
+}
+
+#[test]
+fn test_ref_sub() {
+    let v1 = vectors::ThreeVector::new(1.0, 2.0, 3.0);
+
+    assert_eq!(&v1 - &v1, vectors::ThreeVector::zeros());
+}
+
+#[test]
+fn test_sum() {
+    let v1 = vectors::ThreeVector::new(1.0, 2.0, 3.0);
+    let v2 = vectors::ThreeVector::new(1.0, 2.0, 3.0);
+
+    assert_eq!(v1 + v2, vectors::ThreeVector::new(2.0, 4.0, 6.0));
+}
+#[test]
+fn test_ref_sum() {
+    let v1 = vectors::ThreeVector::new(1.0, 2.0, 3.0);
+
+    assert_eq!(&v1 + &v1, vectors::ThreeVector::new(2.0, 4.0, 6.0));
 }
 
 #[test]
@@ -49,4 +79,20 @@ fn test_cross() {
 
     assert_eq!(v1.cross(v2), vectors::ThreeVector::new(-3.0, 6.0, -3.0))
 
+}
+
+#[test]
+fn test_div() {
+    let v1 = vectors::ThreeVector::new(1.0, 2.0, 3.0);
+    let new = v1/2.0;
+
+    assert_eq!((new.x, new.y, new.z), (0.5, 1.0, 1.5))
+}
+
+#[test]
+fn test_ref_div() {
+    let v1 = vectors::ThreeVector::new(1.0, 2.0, 3.0);
+    let new = &v1 / 2.0;
+
+    assert_eq!((new.x, new.y, new.z), (0.5, 1.0, 1.5))
 }

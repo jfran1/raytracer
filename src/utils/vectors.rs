@@ -1,7 +1,7 @@
 use std::ops::{Mul, Sub, Add, Div};
 use std::fmt;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct ThreeVector {
     pub x: f64, 
     pub y: f64,
@@ -33,13 +33,33 @@ impl ThreeVector {
         ThreeVector::new(x, y , z)
     }
 
-    pub fn make_unit_vector(self) -> ThreeVector {
+    pub fn unit_vector(self) -> ThreeVector {
         let norm = 1.0/ (self.x * self.x + self.y*self.y + self.z*self.z).sqrt();
         self * norm
+    }
+
+    pub fn length(&self) -> f64 {
+        self.length_squared().sqrt()
+    }
+
+    pub fn length_squared(&self) -> f64 {
+        self.x*self.x + self.y*self.y + self.z*self.z
     }
 }
 
 impl Div<f64> for ThreeVector {
+    type Output = ThreeVector;
+
+    fn div(self, rhs: f64) -> ThreeVector {
+        let x = self.x / rhs;
+        let y = self.y / rhs;
+        let z = self.z / rhs;
+
+        ThreeVector::new(x, y, z)
+    }
+}
+
+impl Div<f64> for &ThreeVector {
     type Output = ThreeVector;
 
     fn div(self, rhs: f64) -> ThreeVector {
@@ -63,13 +83,37 @@ impl Mul<f64> for ThreeVector {
     }
 }
 
-impl Add<&ThreeVector> for ThreeVector {
+impl Mul<f64> for &ThreeVector {
     type Output = ThreeVector;
 
-    fn add(self, other: &ThreeVector) -> ThreeVector {
+    fn mul(self, rhs: f64) -> ThreeVector {
+        let x = self.x * rhs;
+        let y = self.y * rhs;
+        let z = self.z * rhs;
+
+        ThreeVector::new(x, y , z)
+    }
+}
+
+impl Add<ThreeVector> for ThreeVector {
+    type Output = ThreeVector;
+
+    fn add(self, other: ThreeVector) -> ThreeVector {
         let x = self.x + other.x;
         let y = self.y + other.y;
         let z = self.z + other.z;
+
+        ThreeVector::new(x, y, z)
+    }
+}
+
+impl Add<&ThreeVector> for &ThreeVector {
+    type Output = ThreeVector;
+
+    fn add(self, rhs: &ThreeVector) -> ThreeVector {
+        let x = self.x + rhs.x;
+        let y = self.y + rhs.y;
+        let z = self.z + rhs.z;
 
         ThreeVector::new(x, y, z)
     }
@@ -87,6 +131,18 @@ impl Sub<ThreeVector> for ThreeVector {
     }
 }
 
+impl Sub<&ThreeVector> for &ThreeVector {
+    type Output = ThreeVector;
+
+    fn sub(self, other: &ThreeVector) -> ThreeVector {
+        let x = self.x - other.x;
+        let y = self.y - other.y;
+        let z = self.z - other.z;
+
+        ThreeVector::new(x, y, z)
+    }
+}
+
 impl fmt::Display for ThreeVector {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "({}, {}, {})", self.x , self.y, self.z)
@@ -95,27 +151,35 @@ impl fmt::Display for ThreeVector {
 
 
 pub struct Color {
-    pub r: f32,
-    pub g: f32,
-    pub b: f32,
+    pub r: f64,
+    pub g: f64,
+    pub b: f64,
 }
 
 impl Color {
-    pub fn new(r: f32, g: f32, b: f32) -> Color {
+    pub fn new(r: f64, g: f64, b: f64) -> Color {
         Color {r, g, b}
+    }
+
+    pub fn write_color(&self) {
+        println!["{}", self]
     }
 }
 
 impl fmt::Display for Color {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "(r: {} g: {} b: {})", self.r, self.g, self.b)
+        let scale = 255.999;
+        let a = (self.r*scale) as i64;
+        let b = (self.g*scale) as i64;
+        let c = (self.b*scale) as i64;
+        write!(f, "{} {} {}", a, b, c)
     }
 }
 
-impl Div<f32> for Color {
+impl Div<f64> for Color {
     type Output = Color;
 
-    fn div(self, rhs: f32) -> Color {
+    fn div(self, rhs: f64) -> Color {
         let r = self.r / rhs;
         let g = self.g / rhs;
         let b = self.b / rhs;
@@ -124,3 +188,26 @@ impl Div<f32> for Color {
     }
 }
 
+impl Mul<f64> for Color {
+    type Output = Color;
+
+    fn mul(self, rhs: f64) -> Color {
+        let r = self.r * rhs;
+        let g = self.g * rhs;
+        let b = self.b * rhs;
+
+        Color::new(r, g, b)
+    }
+}
+
+impl Add<Color> for Color {
+    type Output = Color;
+
+    fn add(self, rhs: Color) -> Color {
+        let r = self.r + rhs.r;
+        let g = self.g + rhs.g;
+        let b = self.b + rhs.b;
+
+        Color::new(r, g, b)
+    }
+}
