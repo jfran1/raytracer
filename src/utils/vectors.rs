@@ -45,6 +45,13 @@ impl ThreeVector {
     pub fn length_squared(&self) -> f64 {
         self.x*self.x + self.y*self.y + self.z*self.z
     }
+
+    pub fn into_color(self) -> Color {
+        let r = self.x;
+        let g = self.y;
+        let b = self.z;
+        Color::new(r, g, b)
+    }
 }
 
 impl Div<f64> for ThreeVector {
@@ -164,6 +171,7 @@ impl Color {
     pub fn write_color(&self) {
         println!["{}", self]
     }
+
 }
 
 impl fmt::Display for Color {

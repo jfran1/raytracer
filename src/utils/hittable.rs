@@ -9,32 +9,48 @@ pub struct HitRecord {
 }
 
 impl HitRecord {
-    fn update_t(&mut self, t: f64) {
+    pub fn new() -> HitRecord {
+        HitRecord {
+            p: ThreeVector::zeros(),
+            normal: ThreeVector::zeros(),
+            t: 0.0,
+            front_face: false,
+        }
+    }
+
+    pub fn update(&mut self, other: &HitRecord) {
+        self.p = other.p.clone();
+        self.normal = other.normal.clone();
+        self.t = other.t;
+        self.front_face = other.front_face;
+    }
+
+    pub fn update_t(&mut self, t: f64) {
         self.t = t;
     }
-    fn update_normal(&mut self, vec: ThreeVector) {
+    pub fn update_normal(&mut self, vec: ThreeVector) {
         self.normal = vec;
     }
-    fn update_p(&mut self, vec: ThreeVector) {
+    pub fn update_p(&mut self, vec: ThreeVector) {
         self.p = vec;
     }
-    fn get_p(&self) -> &ThreeVector {
+    pub fn get_p(&self) -> &ThreeVector {
         &self.p
     }
-    fn get_normal(&self) -> &ThreeVector {
+    pub fn get_normal(&self) -> &ThreeVector {
         &self.normal
     }
-    fn get_t(&self) -> f64 {
+    pub fn get_t(&self) -> f64 {
         self.t
     }
-    fn set_face_normal(&mut self, r: &Ray, outward_normal: &ThreeVector) {
+    pub fn set_face_normal(&mut self, r: &Ray, outward_normal: &ThreeVector) {
         self.front_face = ThreeVector::dot(r.get_direction(), outward_normal) < 0.;
         self.normal = if self.front_face {outward_normal * 1.0} else {outward_normal * -1.0};
     }
 }
 
 
-trait Hittable {
+pub trait Hittable {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool;
 }
 

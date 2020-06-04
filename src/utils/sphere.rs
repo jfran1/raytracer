@@ -1,6 +1,9 @@
+use crate::utils::vectors::ThreeVector;
+use crate::utils::rays::Ray;
+use crate::utils::hittable::{HitRecord, Hittable};
 
 
-struct Sphere {
+pub struct Sphere {
     center: ThreeVector,
     radius: f64,
 }
@@ -18,7 +21,7 @@ impl Hittable for Sphere {
             let temp = (-half_b - root) / a;
             if temp < t_max && temp > t_min {
                 rec.update_t(temp);
-                rec.update_p(r.at(rec.t));
+                rec.update_p(r.at(rec.get_t()));
                 let outward_normal = (rec.get_p() - self.get_center()) / self.radius;
                 rec.set_face_normal(r, &outward_normal);
                 return true
@@ -38,10 +41,19 @@ impl Hittable for Sphere {
 }
 
 impl Sphere {
+    
+    pub fn new(center: ThreeVector, radius: f64) -> Sphere {
+        Sphere {
+            center,
+            radius,
+        }
+    }
+
     pub fn get_center(&self) -> &ThreeVector {
         &self.center
     }
     pub fn get_radius(&self) -> f64 {
         self.radius
     }
+
 }
