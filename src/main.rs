@@ -1,5 +1,7 @@
-
 mod utils;
+
+use rand;
+
 use utils::vectors::{ThreeVector, Color};
 use utils::rays::Ray;
 use utils::hittable::{HitRecord, Hittable};
@@ -30,7 +32,9 @@ fn main() {
     let origin = ThreeVector::new(0.0, 0.0, 0.0);
     let horizontal = ThreeVector::new(viewport_width, 0., 0.);
     let vertical = ThreeVector::new(0., viewport_height, 0.);
-    let lower_left_corner = &origin - &(&horizontal / 2.0) - &vertical / 2.0 - ThreeVector::new(0., 0., focal_length);
+    let lower_left_corner = {
+        &origin - &(&horizontal / 2.0) 
+        - &vertical / 2.0 - ThreeVector::new(0., 0., focal_length)};
     
     let mut world = HittableList::new(Box::<Vec<Sphere>>::new(vec![]));
     world.add(Sphere::new(ThreeVector::new(0., 0., -1.), 0.5));
