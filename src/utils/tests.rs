@@ -17,7 +17,7 @@ fn test_dot_product() {
     let v1 = vectors::ThreeVector::new(1.0, 2.0, 3.0);
     let v2 = vectors::ThreeVector::new(1.0, 2.0, 3.0);
 
-    assert_eq!(v1.dot(v2), 14.0)
+    assert_eq!(vectors::ThreeVector::dot(&v1, &v2), 14.0)
 }
 
 #[test]

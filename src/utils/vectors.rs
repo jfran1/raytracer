@@ -17,10 +17,10 @@ impl ThreeVector {
         ThreeVector::new(0f64, 0f64, 0f64)
     }
 
-    pub fn dot(&self, other: ThreeVector) -> f64 {
-        let x = self.x * other.x;
-        let y = self.y * other.y;
-        let z = self.z * other.z;
+    pub fn dot(lhs: &ThreeVector, rhs: &ThreeVector) -> f64 {
+        let x = lhs.x * rhs.x;
+        let y = lhs.y * rhs.y;
+        let z = lhs.z * rhs.z;
 
         x + y + z 
     }

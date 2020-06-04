@@ -3,9 +3,28 @@ mod utils;
 use utils::vectors::{ThreeVector, Color};
 use utils::rays::Ray;
 
+fn hit_sphere(center: &ThreeVector, radius: f64, ray: &Ray) -> f64 {
+    let oc = ray.get_origin() - center;
+    let a = ray.get_direction().length_squared();
+    let half_b = ThreeVector::dot(&oc, ray.get_direction());
+    let c = oc.length_squared() - radius*radius;
+    let discriminant = half_b*half_b - a*c;
+    if discriminant < 0.0 {
+        -1.0
+    } else {
+        (-half_b - discriminant.sqrt() ) / a
+    }
+}
+
 fn ray_color(r: &Ray) -> Color {
-    let (r1, g1, b1) = (41./255.0, 128./255.0, 185.0/255.0);
-    let (r2, g2, b2) = (192./255.0, 57./255.0, 43.0/255.0);
+    let t =  hit_sphere(&ThreeVector::new(0., 0., -1.), 0.5, r);
+    if t > 0.0 {
+        let n = (r.at(t) - ThreeVector::new(0., 0., -1.)).unit_vector();
+        return Color::new(n.x + 1., n.y + 1., n.z + 1.) * 0.5
+    }
+    
+    let (r1, g1, b1) = (1., 1., 1.);
+    let (r2, g2, b2) = (0.5, 0.7, 1.0);
     let unit_diretion = r.get_direction().clone().unit_vector();
     let t = 0.5 * (unit_diretion.y + 1.0);
     Color::new(r1, g1, b1) * (1.0 - t) + Color::new(r2, g2, b2) * t
@@ -13,7 +32,7 @@ fn ray_color(r: &Ray) -> Color {
 fn main() {
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
     const IMAGE_WIDTH: i32 = 384;
-    const IMAGE_HEIGHT: i32 = (256.0 / ASPECT_RATIO) as i32;
+    const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
 
     println!["P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT];
     
@@ -32,7 +51,7 @@ fn main() {
             let u = i as f64 / (IMAGE_WIDTH - 1) as f64;
             let v = j as f64 / (IMAGE_HEIGHT - 1) as f64;
 
-            // I have created an barrowing nightmare ....
+            // I have created an borrowing nightmare ....
             let partial1 = &lower_left_corner + &(&horizontal * u);
             let partial2 = &(&vertical * v) - &origin;
             let direction = &partial1 + &partial2;
