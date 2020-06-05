@@ -1,6 +1,6 @@
 mod utils;
 
-use rand;
+use rand::Rng;
 
 use utils::vectors::{ThreeVector, Color};
 use utils::rays::Ray;
@@ -8,6 +8,7 @@ use utils::hittable::{HitRecord, Hittable};
 use utils::hittablelist::HittableList;
 use utils::sphere::Sphere;
 use utils::rtweekend;
+use utils::camera::Camera;
 
 fn ray_color<T: Hittable>(r: &Ray, world: &T) -> Color {
     let mut rec = HitRecord::new();
@@ -22,19 +23,11 @@ fn main() {
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
     const IMAGE_WIDTH: i32 = 384;
     const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
+    const SAMPLES_PER_PIXEL: i64 = 100;
 
     println!["P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT];
     
-    let viewport_height = 2.0;
-    let viewport_width = ASPECT_RATIO * viewport_height;
-    let focal_length = 1.0;
-    
-    let origin = ThreeVector::new(0.0, 0.0, 0.0);
-    let horizontal = ThreeVector::new(viewport_width, 0., 0.);
-    let vertical = ThreeVector::new(0., viewport_height, 0.);
-    let lower_left_corner = {
-        &origin - &(&horizontal / 2.0) 
-        - &vertical / 2.0 - ThreeVector::new(0., 0., focal_length)};
+    let cam = Camera::new();
     
     let mut world = HittableList::new(Box::<Vec<Sphere>>::new(vec![]));
     world.add(Sphere::new(ThreeVector::new(0., 0., -1.), 0.5));
@@ -43,17 +36,14 @@ fn main() {
     for j in (0..IMAGE_HEIGHT).rev() {
         eprint!("\rScanline remaining: {}", j);
         for i in 0..IMAGE_WIDTH {
-            let u = i as f64 / (IMAGE_WIDTH - 1) as f64;
-            let v = j as f64 / (IMAGE_HEIGHT - 1) as f64;
-
-            // I have created an borrowing nightmare ....
-            let partial1 = &lower_left_corner + &(&horizontal * u);
-            let partial2 = &(&vertical * v) - &origin;
-            let direction = &partial1 + &partial2;
-            let ray = Ray::new(&origin, &direction);
-            let pixel_color = ray_color(&ray, &world);
-            
-            pixel_color.write_color();
+            let mut  pixel_color = Color::new(0., 0., 0.);
+            for _ in 0..SAMPLES_PER_PIXEL {
+                let u = (i as f64 + rand::random::<f64>()) / (IMAGE_WIDTH -1) as f64; 
+                let v = (j as f64 + rand::random::<f64>()) / (IMAGE_HEIGHT -1 ) as f64;
+                let r = cam.get_ray(u, v);
+                pixel_color = pixel_color + ray_color(&r, &world);
+            }
+            pixel_color.write_color(SAMPLES_PER_PIXEL);
         }
     }
 

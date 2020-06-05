@@ -1,6 +1,8 @@
 use std::ops::{Mul, Sub, Add, Div};
 use std::fmt;
 
+use crate::utils::rtweekend::clamp;
+
 #[derive(Debug, PartialEq, Clone)]
 pub struct ThreeVector {
     pub x: f64, 
@@ -168,8 +170,20 @@ impl Color {
         Color {r, g, b}
     }
 
-    pub fn write_color(&self) {
-        println!["{}", self]
+    pub fn write_color(&self, samples_per_pixel: i64) {
+        let mut r = self.r;
+        let mut g = self.g;
+        let mut b = self.b;
+        
+        let scale = 1.0 / samples_per_pixel as f64;
+        r *= scale;
+        g *= scale;
+        b *= scale;
+        
+        println!["{} {} {}", 
+            (clamp(r, 0., 0.999) * 256.) as i64 ,
+            (clamp(g, 0., 0.999) * 256.) as i64 ,
+            (clamp(b, 0., 0.999) * 256.) as i64] 
     }
 
 }
