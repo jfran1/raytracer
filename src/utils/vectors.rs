@@ -1,5 +1,6 @@
 use std::ops::{Mul, Sub, Add, Div};
 use std::fmt;
+use rand::{thread_rng, Rng}; 
 
 use crate::utils::rtweekend::clamp;
 
@@ -53,6 +54,23 @@ impl ThreeVector {
         let g = self.y;
         let b = self.z;
         Color::new(r, g, b)
+    }
+
+    pub fn random(min: f64, max: f64) -> Self {
+        let mut rng = thread_rng();
+        let x = rng.gen_range(min, max); 
+        let y = rng.gen_range(min, max); 
+        let z = rng.gen_range(min, max); 
+
+        ThreeVector::new(x, y, z)
+    }
+
+    pub fn random_in_unit_sphere() -> Self {
+        loop {
+            let p = ThreeVector::random(-1.0, 1.0);
+            if p.length_squared() >= 1.0 {continue;}
+            return p;
+        }
     }
 }
 

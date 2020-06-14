@@ -12,10 +12,6 @@ pub struct Camera {
 impl Camera {
     pub fn new() -> Camera {
         const ASPECT_RATIO: f64 = 16.0 / 9.0;
-        const IMAGE_WIDTH: i32 = 384;
-        const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
-
-        println!["P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT];
         
         let viewport_height = 2.0;
         let viewport_width = ASPECT_RATIO * viewport_height;

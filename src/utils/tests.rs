@@ -96,3 +96,17 @@ fn test_ref_div() {
 
     assert_eq!((new.x, new.y, new.z), (0.5, 1.0, 1.5))
 }
+
+#[test]
+fn test_random() {
+    vectors::ThreeVector::random(1.0, 2.0);
+    vectors::ThreeVector::random(0.0, 8.0);
+    vectors::ThreeVector::random(1.0, 100.0);
+    assert!(false)
+}
+
+#[test]
+fn test_random_in_unit() {
+    vectors::ThreeVector::random_in_unit_sphere();
+    assert!(false)
+}
