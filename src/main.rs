@@ -12,8 +12,8 @@ fn ray_color<T: Hittable>(r: &Ray, world: &T, depth: i64) -> Color {
     let mut rec = HitRecord::new();
     // If we've exceeded the ray bounce limit, no more light is gathered
     if depth <= 0 {return Color::new(0., 0., 0.)}
-    if world.hit(r, 0., rtweekend::INFINITY, &mut rec) {
-        let target: &ThreeVector = &(&(rec.get_p() + rec.get_normal()) + &ThreeVector::random_in_unit_sphere());
+    if world.hit(r, 0.001, rtweekend::INFINITY, &mut rec) {
+        let target = &(&(rec.get_p() + rec.get_normal()) + &ThreeVector::random_in_unit_vector());
         return ray_color(&Ray::new(rec.get_p(), &(target - rec.get_p())), world, depth-1) 
     }
     let unit_direction = r.get_direction().clone().unit_vector();

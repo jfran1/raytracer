@@ -2,7 +2,7 @@ use std::ops::{Mul, Sub, Add, Div};
 use std::fmt;
 use rand::{thread_rng, Rng}; 
 
-use crate::utils::rtweekend::clamp;
+use crate::utils::rtweekend::{PI, clamp};
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct ThreeVector {
@@ -65,12 +65,12 @@ impl ThreeVector {
         ThreeVector::new(x, y, z)
     }
 
-    pub fn random_in_unit_sphere() -> Self {
-        loop {
-            let p = ThreeVector::random(-1.0, 1.0);
-            if p.length_squared() >= 1.0 {continue;}
-            return p;
-        }
+    pub fn random_in_unit_vector() -> Self {
+        let mut rng = thread_rng();
+        let a = rng.gen_range(0.0, 2.0*PI);
+        let z = rng.gen_range(-1.0, 1.0);
+        let r = ((1.0 - z*z) as f64).sqrt();
+        ThreeVector::new(r*a.cos(), r*a.sin(), z)
     }
 }
 
@@ -192,11 +192,10 @@ impl Color {
         let mut r = self.r;
         let mut g = self.g;
         let mut b = self.b;
-        
         let scale = 1.0 / samples_per_pixel as f64;
-        r *= scale;
-        g *= scale;
-        b *= scale;
+        r = (scale * r).sqrt();
+        g = (scale * g).sqrt();
+        b = (scale * b).sqrt();
         
         println!["{} {} {}", 
             (clamp(r, 0., 0.999) * 256.) as i64 ,
