@@ -33,6 +33,8 @@ impl Camera {
     }
 
     pub fn get_ray(&self, u: f64, v: f64) -> Ray {
+        // not sure why subtracting from teh origin is needed
+        // shouldn't the lower_left_corner be enough to calculuate direction?
         let direction = &(&self.lower_left_corner + &(&self.horizontal*u)) + &(&(&self.vertical*v) - &self.origin);
         Ray::new(&self.origin, &direction)
     }

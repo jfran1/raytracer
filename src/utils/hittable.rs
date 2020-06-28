@@ -1,9 +1,11 @@
 use crate::utils::vectors::{ThreeVector};
 use crate::utils::rays::Ray;
+use crate::utils::material::Material;
 
 pub struct HitRecord {
     p: ThreeVector,
     normal: ThreeVector,
+    mat_ptr: &Material,
     t: f64,
     front_face: bool,
 }
@@ -43,6 +45,9 @@ impl HitRecord {
     pub fn get_t(&self) -> f64 {
         self.t
     }
+
+    // Set direction of normal by checing if the outward_normal is parallel
+    // to the ray.
     pub fn set_face_normal(&mut self, r: &Ray, outward_normal: &ThreeVector) {
         self.front_face = ThreeVector::dot(r.get_direction(), outward_normal) < 0.;
         self.normal = if self.front_face {outward_normal * 1.0} else {outward_normal * -1.0};

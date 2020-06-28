@@ -1,11 +1,12 @@
 use crate::utils::vectors::ThreeVector;
 use crate::utils::rays::Ray;
 use crate::utils::hittable::{HitRecord, Hittable};
-
+use crate::utils::material::Material;
 
 pub struct Sphere {
     center: ThreeVector,
     radius: f64,
+    mat_ptr: &Material
 }
 
 impl Hittable for Sphere {
@@ -24,6 +25,7 @@ impl Hittable for Sphere {
                 rec.update_p(r.at(rec.get_t()));
                 let outward_normal = (rec.get_p() - self.get_center()) / self.radius;
                 rec.set_face_normal(r, &outward_normal);
+                rec.mat_ptr = mat_ptr;
                 return true
             }
             let temp = (-half_b + root) / a;
@@ -32,6 +34,7 @@ impl Hittable for Sphere {
                 rec.update_p(r.at(rec.get_t()));
                 let outward_normal = (rec.get_p() - self.get_center()) / self.get_radius();
                 rec.set_face_normal(r, &outward_normal);
+                rec.mat_ptr = mat_ptr;
                 return true
             }
         }
