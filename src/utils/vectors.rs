@@ -1,12 +1,12 @@
 use std::ops::{Mul, Sub, Add, Div};
 use std::fmt;
-use rand::{thread_rng, Rng}; 
+use rand::{thread_rng, Rng};
 
 use crate::utils::rtweekend::{PI, clamp};
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct ThreeVector {
-    pub x: f64, 
+    pub x: f64,
     pub y: f64,
     pub z: f64,
 }
@@ -25,14 +25,14 @@ impl ThreeVector {
         let y = lhs.y * rhs.y;
         let z = lhs.z * rhs.z;
 
-        x + y + z 
+        x + y + z
     }
 
     pub fn cross(&self, other: ThreeVector) -> ThreeVector {
         let x = self.y*other.z - self.z*other.y;
         let y = self.z*other.x - self.x*other.z;
         let z = self.x*other.y - self.y*other.x;
-        
+
         ThreeVector::new(x, y , z)
     }
 
@@ -58,9 +58,9 @@ impl ThreeVector {
 
     pub fn random(min: f64, max: f64) -> Self {
         let mut rng = thread_rng();
-        let x = rng.gen_range(min, max); 
-        let y = rng.gen_range(min, max); 
-        let z = rng.gen_range(min, max); 
+        let x = rng.gen_range(min, max);
+        let y = rng.gen_range(min, max);
+        let z = rng.gen_range(min, max);
 
         ThreeVector::new(x, y, z)
     }
@@ -196,11 +196,11 @@ impl Color {
         r = (scale * r).sqrt();
         g = (scale * g).sqrt();
         b = (scale * b).sqrt();
-        
-        println!["{} {} {}", 
+
+        println!["{} {} {}",
             (clamp(r, 0., 0.999) * 256.) as i64 ,
             (clamp(g, 0., 0.999) * 256.) as i64 ,
-            (clamp(b, 0., 0.999) * 256.) as i64] 
+            (clamp(b, 0., 0.999) * 256.) as i64]
     }
 
 }
